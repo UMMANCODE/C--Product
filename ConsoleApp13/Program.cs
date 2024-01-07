@@ -4,11 +4,6 @@ using System.Reflection;
 namespace ConsoleApp13 {
     internal class Program {
         static void Main(string[] args) {
-            // Ansi colors
-            const string RESET = "\033[0m";
-            const string RED = "\033[0;31m";
-            const string GREEN = "\033[0;32m";
-            const string BLUE = "\033[0;34m";
 
             string[] products = new string[] { "Apple", "Banana", "Orange", "Kiwi", "Pineapple" };
             int option;
@@ -27,8 +22,13 @@ namespace ConsoleApp13 {
                         ShowSpecifiedProduct(products, index);
                         break;
                     case 3:
-                        Console.Write("\nEnter the name of the product: ");
-                        string product = Console.ReadLine();
+                        string product;
+                        do {
+                            Console.Write("\nEnter the name of the product: ");
+                            product = Console.ReadLine();
+                            TrimWhiteSpace(ref product);
+                        } while (product.Length < 2 || product.Length > 20);
+
                         AddNewProduct(ref products, product);
                         break;
                     case 4:
@@ -73,12 +73,42 @@ namespace ConsoleApp13 {
             Console.WriteLine(array[index]);
         }
 
+        static void TrimWhiteSpace(ref string product) {
+            string newString = "";
+            int i = 0, j = product.Length - 1;
+
+            while (i < product.Length && product[i] == ' ') {
+                i++;
+            }
+
+            while (j >= 0 && product[j] == ' ') {
+                j--;
+            }
+
+            for (int k = i; k <= j; k++) {
+                newString += product[k];
+            }
+
+            product = newString;
+        }
+
+
         static void AddNewProduct(ref string[] array, string product) {
+
+            bool isProductExist = false;
+
+            for (int i = 0; i < array.Length; i++) {
+                if (array[i] == product) {
+                    isProductExist = true;
+                    break;
+                }
+            }
+            if (isProductExist) return;
             string[] newArray = new string[array.Length + 1];
             for (int i = 0; i < array.Length; i++) {
                 newArray[i] = array[i];
             }
-            newArray[newArray.Length - 1] = product;
+            newArray[array.Length] = product;
             array = newArray;
         }
 
